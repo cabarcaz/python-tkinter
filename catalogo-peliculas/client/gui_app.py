@@ -1,5 +1,7 @@
 # Importo la libreria de UI
 import tkinter as tk
+from tkinter import ttk
+from model.pelicula_dao import crear_tablas, borrar_tabla
 
 
 #! Creo menu de la app, recibe la ventana principal
@@ -11,8 +13,8 @@ def barra_menu(root):
     menu_inicio = tk.Menu(barra_menu, tearoff=0)
     barra_menu.add_cascade(label="Inicio", menu=menu_inicio)
     #! Submenu del menu de inicio
-    menu_inicio.add_command(label="Crear nuevo registro")
-    menu_inicio.add_command(label="Eliminar registro")
+    menu_inicio.add_command(label="Crear nuevo registro", command=crear_tablas)
+    menu_inicio.add_command(label="Eliminar registro", command=borrar_tabla)
     # opcion salir funcional.
     menu_inicio.add_command(label="Salir", command=root.destroy)
     #! Debo crear el objeto completo si quiero mas opciones y que sean funcionales
@@ -48,6 +50,8 @@ class Frame(tk.Frame):
         self.campos_pelicula()
         # Llamo al metodo para que se inicie todo desabilitado.
         self.desabilitar_campos()
+        # Llamo o ejecuto la vista de la tabla de datos
+        self.tabla_peliculas()
 
     #! Label para opciones de llenado(campos)
     def campos_pelicula(self):
@@ -99,7 +103,7 @@ class Frame(tk.Frame):
             activebackground="#35BD6F",
         )
         # Posicionamiento del boton
-        self.boton_nuevo.grid(row=4, column=0, padx=10, pady=10)
+        self.boton_nuevo.grid(row=3, column=0, padx=10, pady=10)
 
         self.boton_guardar = tk.Button(self, text="Guardar", command=self.guardar_datos)
         self.boton_guardar.config(
@@ -110,7 +114,7 @@ class Frame(tk.Frame):
             cursor="hand2",
             activebackground="#3586DF",
         )
-        self.boton_guardar.grid(row=4, column=1, padx=10, pady=10)
+        self.boton_guardar.grid(row=3, column=1, padx=10, pady=10)
 
         self.boton_cancelar = tk.Button(
             self, text="Cancelar", command=self.desabilitar_campos
@@ -123,7 +127,7 @@ class Frame(tk.Frame):
             cursor="hand2",
             activebackground="#E15370",
         )
-        self.boton_cancelar.grid(row=4, column=2, padx=10, pady=10)
+        self.boton_cancelar.grid(row=3, column=2, padx=10, pady=10)
 
     # ? Habilitar Campos
     def habilitar_campos(self):
@@ -157,3 +161,41 @@ class Frame(tk.Frame):
 
     def guardar_datos(self):
         self.desabilitar_campos()
+
+    # Diseño tabla de vista de datos
+    def tabla_peliculas(self):
+        self.tabla = ttk.Treeview(self, column=("Nombre", "Duracion", "Genero"))
+        self.tabla.grid(row=4, column=0, columnspan=4)
+
+        self.tabla.heading("#0", text="ID", anchor=tk.CENTER)
+        self.tabla.heading("#1", text="Nombre", anchor=tk.CENTER)
+        self.tabla.heading("#2", text="Duración", anchor=tk.CENTER)
+        self.tabla.heading("#3", text="Genero", anchor=tk.CENTER)
+
+        self.tabla.insert("", 0, text="1", values=("Avatar", "2", "Accion"))
+
+        # Botonoes inferiores.
+        # Objeto de boton
+        self.boton_editar = tk.Button(self, text="Editar")
+        # Configuracion/personalizacion del boton
+        self.boton_editar.config(
+            font=("Arial", 12, "bold"),
+            width=20,
+            fg="#DAD5D6",
+            bg="#158645",
+            cursor="hand2",
+            activebackground="#35BD6F",
+        )
+        # Posicionamiento del boton
+        self.boton_editar.grid(row=5, column=0, padx=10, pady=10)
+
+        self.boton_eliminar = tk.Button(self, text="Eliminar")
+        self.boton_eliminar.config(
+            font=("Arial", 12, "bold"),
+            width=20,
+            fg="#DAD5D6",
+            bg="#BD152E",
+            cursor="hand2",
+            activebackground="#E15370",
+        )
+        self.boton_eliminar.grid(row=5, column=1, padx=10, pady=10)
